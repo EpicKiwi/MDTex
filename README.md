@@ -11,5 +11,3 @@ You can import another markdown file using the import syntax with a path relativ
 ```
 <(./file.md)>
 ```
-
-in this example, we import the file `file.md` from the current directory
