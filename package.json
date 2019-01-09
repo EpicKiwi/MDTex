@@ -1,0 +1,24 @@
+{
+  "name": "mdtex",
+  "version": "1.0.0",
+  "description": "Compile markdown into beautiful LaTeX document",
+  "main": "src/cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "latex",
+    "markdown"
+  ],
+  "author": "EpicKiwi <me@epickiwi.fr>",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "rebber": "^3.1.1",
+    "remark-parse": "^6.0.3",
+    "unified": "^7.1.0",
+    "unist-util-visit": "^1.4.0",
+    "vfile": "^4.0.0"
+  }
+}
