@@ -51,6 +51,7 @@ function importResolver() {
               path: filePath,
               contents: fileContent
             });
+            importedVfile.data.importedFile = true;
             importedVfile.data.imports = file.data.imports;
             file.data.imports.push(importedVfile);
             n.file = await this.process(importedVfile);
