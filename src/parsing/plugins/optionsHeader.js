@@ -42,14 +42,16 @@ function optionHeaderPlugin() {
   methods.unshift("ignoreOptions");
 
   return (_tree, file) => {
+    if (file.data.importedFile) return;
     if (headerError) {
       file.fail(headerError.error.reason, headerError.position);
     }
     if (file.data.options) {
-      normalizeOptions(mergeOptions(file.data.options, headerOptions));
+      mergeOptions(file.data.options, headerOptions);
     } else {
       file.data.options = headerOptions;
     }
+    normalizeOptions(file.data.options);
   };
 }
 
