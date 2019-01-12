@@ -17,8 +17,8 @@ const statusColors = {
 
 const defaultFunction = console.log;
 const statusFunctions = {
-  [logType.ERROR]: console.error,
-  [logType.WARNING]: console.error,
+  [logType.ERROR]: process.env.DEBUG ? console.trace : console.error,
+  [logType.WARNING]: process.env.DEBUG ? console.trace : console.error,
   [logType.INFO]: console.info,
   [logType.OK]: console.info
 };

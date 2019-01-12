@@ -26,7 +26,8 @@ If it exists, it will be overriten.
 BuildCommand.flags = {
   out: flags.string({
     char: "o",
-    description: "Output directory of LaTeX build result"
+    description: "Output directory of LaTeX build result",
+    default: "./out"
   }),
   "no-build": flags.boolean({
     char: "B",

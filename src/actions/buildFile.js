@@ -37,10 +37,9 @@ async function buildFile(inputFile, outputFolder = "./out", build = true) {
     var result = await parser.getParser().process(indexVfile);
   } catch (err) {
     err.file ? vfileLogger.logMessages(err) : logger.error(err);
-    process.exit(1);
+    throw err;
   }
 
-  vfileLogger.logMessages(...result.messages);
   result.data.imports.forEach(f => vfileLogger.logMessages(...f.messages));
 
   const resultVfile = vfile({
