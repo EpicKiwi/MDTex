@@ -60,6 +60,9 @@ async function buildFile(inputFile, outputFolder = "./out", build = true) {
   try {
     compilationResult = await latexOutput.compileLatex(texFile, outputPath);
   } catch (e) {
+    if (!e.errors) {
+      throw e;
+    }
     compilationResult = e;
     var exitCode = 1;
   }

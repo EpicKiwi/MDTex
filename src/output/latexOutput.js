@@ -1,5 +1,6 @@
 const cp = require("child_process");
 const logger = require("../loggers/logger");
+const path = require("path");
 
 const ERROR_LINE_REGEX = /\n! (.+?)\.(?:.|\n)*?\nl\.(\d+)/i;
 const MULTILINE_ERROR_REG = new RegExp(ERROR_LINE_REGEX, "gi");
@@ -9,7 +10,7 @@ async function compileLatex(filePath, outputPath) {
   const command = `pdflatex -interaction nonstopmode "-output-directory=${outputPath}" "${filePath}"`;
   return await new Promise((resolve, reject) => {
     const latexProcess = cp.exec(command, {
-      cwd: process.cwd()
+      cwd: path.dirname(filePath)
     });
 
     let outputContent = "";

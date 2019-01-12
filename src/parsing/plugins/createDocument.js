@@ -47,7 +47,7 @@ function createDocument() {
     let docOptionPath = file.data.options.document;
     let documentPath = path.isAbsolute(file.data.options.document)
       ? docOptionPath
-      : path.resolve(process.cwd(), docOptionPath);
+      : path.resolve(path.dirname(file.path), docOptionPath);
     let documentContent = "";
 
     try {

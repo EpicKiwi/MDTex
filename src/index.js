@@ -14,6 +14,9 @@ class BuildCommand extends Command {
       try {
         await this.build();
       } catch (e) {
+        if (process.env.DEBUG) {
+          logger.error(e);
+        }
         this.exit(e.exitCode);
       }
     }
