@@ -10,14 +10,29 @@ Compile markdown into beautiful LaTeX document
 
 ```sh-session
 $ npm install -g mdtex
-$ mdtex build
+$ mdtex
 ```
 
-# Commands
+```sh-session
+$ mdtex --help
+Build a markdown file into a pdf
 
-- `mdtex help [COMMAND]`: Give help about commands
-- `mdtex build [INPUT]`: Build a markdown document into a pdf file
-- `mdtex watch [INPUT]`: Watch the current directory and build if a file change
+USAGE
+  $ mdtex [INPUT]
+
+ARGUMENTS
+  INPUT  [default: index.md] Markdown file to process
+
+OPTIONS
+  -B, --no-build  Only parse markdown to LaTeX
+  -o, --out=out   [default: ./out] Output directory of LaTeX build result
+  -w, --watch     Watch this folder and rebuild when a file change
+
+DESCRIPTION
+  Start the process of build by parsing the specified file and building it with pdflatex
+  It will generate a tex file with the name of md file in the current directory.
+  If it exists, it will be overriten.
+```
 
 # Extra syntax
 
