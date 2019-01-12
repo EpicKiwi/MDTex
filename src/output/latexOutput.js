@@ -7,7 +7,7 @@ const OUTPUT_INFO_REG = /Output written on ((?:.|\n)+) \((\d+)/;
 
 async function compileLatex(filePath, outputPath) {
   const command = `pdflatex -interaction nonstopmode "-output-directory=${outputPath}" "${filePath}"`;
-  await new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     const latexProcess = cp.exec(command, {
       cwd: process.cwd()
     });
@@ -23,16 +23,19 @@ async function compileLatex(filePath, outputPath) {
         output: isOutputProduced(outputContent)
       };
       if (exitCode > 0) {
-        reject(result);
-      } else {
-        resolve(result);
+        return reject(result);
       }
+      return resolve(result);
     });
   });
 }
 
 function parseOutputErrors(output) {
-  return output.match(MULTILINE_ERROR_REG).map(err => {
+  let match = output.match(MULTILINE_ERROR_REG);
+  if (!match) {
+    return [];
+  }
+  return match.map(err => {
     let match = err.match(ERROR_LINE_REGEX);
     return {
       message: match[1],

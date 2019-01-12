@@ -40,11 +40,10 @@ async function run() {
     `LaTeX file converted in ${path.relative(process.cwd(), resultVfile.path)}`
   );
   logger.info(`Compiling LaTeX...`);
+
+  var compilationResult = null;
   try {
-    var compilationResult = await latexOutput.compileLatex(
-      "index.tex",
-      outputPath
-    );
+    compilationResult = await latexOutput.compileLatex("index.tex", outputPath);
   } catch (e) {
     compilationResult = e;
     var exitCode = 1;
