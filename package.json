@@ -1,19 +1,16 @@
 {
   "name": "mdtex",
-  "version": "1.0.0",
   "description": "Compile markdown into beautiful LaTeX document",
-  "main": "src/cli.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "cli",
-    "latex",
-    "markdown"
-  ],
+  "version": "1.0.0",
   "author": "EpicKiwi <me@epickiwi.fr>",
-  "license": "MIT",
+  "bin": {
+    "mdtex": "./bin/run"
+  },
+  "bugs": "https://github.com/EpicKiwi/mdtex/issues",
   "dependencies": {
+    "@oclif/command": "^1.5.8",
+    "@oclif/config": "^1.10.4",
+    "@oclif/plugin-help": "^2.1.4",
     "chalk": "^2.4.2",
     "fastparse": "^1.1.2",
     "js-yaml": "^3.12.1",
@@ -25,5 +22,40 @@
     "unified": "^7.1.0",
     "unist-util-visit": "^1.4.0",
     "vfile": "^4.0.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.21.0",
+    "globby": "^8.0.1"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
+    "/src"
+  ],
+  "homepage": "https://github.com/EpicKiwi/mdtex",
+  "keywords": [
+    "cli",
+    "latex",
+    "markdown"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "commands": "./src/commands",
+    "bin": "mdtex",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "EpicKiwi/mdtex",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
+    "test": "echo NO TESTS",
+    "version": "oclif-dev readme && git add README.md"
   }
 }

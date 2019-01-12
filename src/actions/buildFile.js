@@ -1,22 +1,35 @@
 const fs = require("fs");
 const path = require("path");
 const vfile = require("vfile");
-const vfileLogger = require("./loggers/vfileLogger");
-const parser = require("./parsing/mdTexParser");
 const { promisify } = require("util");
 const pfs = {
-  mkdir: promisify(fs.mkdir)
+  mkdir: promisify(fs.mkdir),
+  readFile: promisify(fs.readFile)
 };
-const latexOutput = require("./output/latexOutput");
 
-const logger = require("./loggers/logger");
+const latexOutput = require("../output/latexOutput");
+const vfileLogger = require("../loggers/vfileLogger");
+const parser = require("../parsing/mdTexParser");
+const logger = require("../loggers/logger");
 
-async function run() {
-  let indexFile = path.resolve(process.cwd(), "./index.md");
-  let fileContent = fs.readFileSync(indexFile, "utf8");
+async function buildFile(inputFile, outputFolder = "./out", build = true) {
+  let indexFile = path.resolve(process.cwd(), inputFile);
+  let texFile = path.join(
+    path.dirname(indexFile),
+    path.basename(indexFile, path.extname(indexFile)) + ".tex"
+  );
+
+  let fileContent = "";
+  try {
+    fileContent = await pfs.readFile(indexFile, "utf8");
+  } catch (e) {
+    logger.error(`Input file ${inputFile} not found`);
+    throw e;
+  }
+
   let indexVfile = vfile({ path: indexFile, contents: fileContent });
 
-  let outputPath = path.resolve(process.cwd(), "./out");
+  let outputPath = path.resolve(process.cwd(), outputFolder);
   logger.info(`Parsing Markdown...`);
 
   try {
@@ -31,7 +44,7 @@ async function run() {
   result.data.imports.forEach(f => vfileLogger.logMessages(...f.messages));
 
   const resultVfile = vfile({
-    path: path.resolve(process.cwd(), "index.tex"),
+    path: path.resolve(process.cwd(), texFile),
     contents: result.contents
   });
 
@@ -39,11 +52,14 @@ async function run() {
   logger.ok(
     `LaTeX file converted in ${path.relative(process.cwd(), resultVfile.path)}`
   );
+
+  if (!build) return;
+
   logger.info(`Compiling LaTeX...`);
 
   var compilationResult = null;
   try {
-    compilationResult = await latexOutput.compileLatex("index.tex", outputPath);
+    compilationResult = await latexOutput.compileLatex(texFile, outputPath);
   } catch (e) {
     compilationResult = e;
     var exitCode = 1;
@@ -68,8 +84,10 @@ async function run() {
   }
 
   if (exitCode > 0) {
-    process.exit(exitCode);
+    let err = new Error(`Errors in process, exit code ${exitCode}`);
+    err.exitCode = exitCode;
+    throw err;
   }
 }
 
-run();
+module.exports = buildFile;
