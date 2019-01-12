@@ -10,7 +10,7 @@ const logType = {
 
 const defaultColor = { background: chalk.inverse, text: chalk.reset };
 const statusColors = {
-  [logType.ERROR]: { background: chalk.bgRed, text: chalk.red },
+  [logType.ERROR]: { background: chalk.bgRed, text: chalk.red.bold },
   [logType.WARNING]: { background: chalk.bgYellow, text: chalk.yellow },
   [logType.OK]: { background: chalk.bgGreen, text: chalk.green }
 };
