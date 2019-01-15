@@ -1,5 +1,5 @@
 const yaml = require("js-yaml");
-const { mergeOptions, normalizeOptions } = require("../../options/optionsUtil");
+const { mergeOptions, parseOptions } = require("../../options/optionsUtil");
 
 const OPTION_BLOC_REGEX = /^(\s*---+\s*\r?\n)([\s\S]+)\n---+\s*\r?\n/;
 
@@ -23,8 +23,7 @@ function optionHeaderPlugin() {
       yamlContent = match[2];
 
       try {
-        let yamlResult = yaml.safeLoad(yamlContent);
-        headerOptions = yamlResult;
+        headerOptions = parseOptions(yamlContent);
       } catch (e) {
         headerError = {
           error: e,
@@ -51,7 +50,6 @@ function optionHeaderPlugin() {
     } else {
       file.data.options = headerOptions;
     }
-    normalizeOptions(file.data.options);
   };
 }
 

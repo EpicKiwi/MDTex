@@ -1,4 +1,6 @@
 const lodash = require("lodash");
+const yaml = require("js-yaml");
+const path = require("path");
 
 function mergeOptions(base, ...sources) {
   return lodash.mergeWith(base, ...sources, (base, src) => {
@@ -29,4 +31,28 @@ function normalizeOptions(options) {
   return options;
 }
 
-module.exports = { mergeOptions, normalizeOptions };
+function parseOptions(yml) {
+  let ymlResult = yaml.safeLoad(yml);
+  return typeof ymlResult !== "undefined" ? normalizeOptions(ymlResult) : {};
+}
+
+function resolveOptionsPath(
+  baseFolder,
+  options,
+  resolveUserRelativePaths = false
+) {
+  let resolvableKeys = options.resolvablePathKeys || [];
+  resolvableKeys.forEach(el => {
+    if (options[el]) {
+      options[el] = path.resolve(baseFolder, options[el]);
+    }
+  });
+  return options;
+}
+
+module.exports = {
+  mergeOptions,
+  normalizeOptions,
+  parseOptions,
+  resolveOptionsPath
+};

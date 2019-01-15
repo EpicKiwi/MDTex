@@ -12,7 +12,8 @@ const vfileLogger = require("../loggers/vfileLogger");
 const parser = require("../parsing/mdTexParser");
 const logger = require("../loggers/logger");
 
-async function buildFile(inputFile, outputFolder = "./out", build = true) {
+async function buildFile(inputFile, envOptions) {
+  const { outputFolder, buildLatex: build } = envOptions;
   let indexFile = path.resolve(process.cwd(), inputFile);
   let texFile = path.join(
     path.dirname(indexFile),
@@ -28,6 +29,7 @@ async function buildFile(inputFile, outputFolder = "./out", build = true) {
   }
 
   let indexVfile = vfile({ path: indexFile, contents: fileContent });
+  indexVfile.data.options = envOptions;
 
   let outputPath = path.resolve(process.cwd(), outputFolder);
   logger.info(`Parsing Markdown...`);

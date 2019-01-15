@@ -4,15 +4,32 @@ const path = require("path");
 const lodash = require("lodash");
 const Watchpack = require("watchpack");
 const logger = require("./loggers/logger");
+const envSetup = require("./options/envSetup");
+const { loadOptions } = require("./options/optionsTree");
 
 class BuildCommand extends Command {
   async run() {
-    const { flags } = this.parse(BuildCommand);
+    const { args, flags } = this.parse(BuildCommand);
+
+    await envSetup.checkSetup();
+    let envOptions = await loadOptions();
+    if (typeof flags.out !== "undefined") {
+      envOptions.outputFolder = flags.out;
+    }
+    if (typeof flags["no-build"] !== "undefined") {
+      envOptions.buildLatex = !flags["no-build"];
+    }
+    if (typeof args.input !== "undefined") {
+      envOptions.index = args.input;
+    }
+
+    console.log(envOptions);
+
     if (flags.watch) {
-      await this.watch();
+      await this.watch(envOptions);
     } else {
       try {
-        await this.build();
+        await this.build(envOptions);
       } catch (e) {
         if (process.env.DEBUG) {
           logger.error(e);
@@ -22,13 +39,13 @@ class BuildCommand extends Command {
     }
   }
 
-  async watch() {
+  async watch(envOptions) {
     const { args, flags } = this.parse(BuildCommand);
     const rebuild = lodash.debounce(async () => {
       console.log("");
       logger.info("Files changed, Rebuilding...");
       try {
-        await this.build();
+        await this.build(envOptions);
       } catch (e) {
         //Ignore
       }
@@ -54,9 +71,8 @@ class BuildCommand extends Command {
     });
   }
 
-  async build() {
-    const { args, flags } = this.parse(BuildCommand);
-    await buildFile(args.input, flags.out, !flags["no-build"]);
+  async build(envOptions) {
+    await buildFile(envOptions.index, envOptions);
   }
 
   exit(...args) {
@@ -77,8 +93,7 @@ If it exists, it will be overriten.
 BuildCommand.flags = {
   out: flags.string({
     char: "o",
-    description: "Output directory of LaTeX build result",
-    default: "./out"
+    description: "Output directory of LaTeX build result"
   }),
   "no-build": flags.boolean({
     char: "B",
@@ -93,8 +108,7 @@ BuildCommand.flags = {
 BuildCommand.args = [
   {
     name: "input",
-    description: "Markdown file to process",
-    default: "index.md"
+    description: "Markdown file to process"
   }
 ];
 
