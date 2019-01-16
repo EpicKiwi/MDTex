@@ -35,7 +35,6 @@ async function buildFile(inputFile, envOptions) {
   logger.info(`Parsing Markdown...`);
 
   try {
-    await pfs.mkdir(outputPath, { recursive: true });
     var result = await parser.getParser().process(indexVfile);
   } catch (err) {
     err.file ? vfileLogger.logMessages(err) : logger.error(err);
@@ -57,8 +56,10 @@ async function buildFile(inputFile, envOptions) {
   if (!build) return;
 
   logger.info(`Compiling LaTeX...`);
+  outputPath = result.data.options.outputFolder;
+  await pfs.mkdir(outputPath, { recursive: true });
 
-  var compilationResult = null;
+  let compilationResult = null;
   try {
     compilationResult = await latexOutput.compileLatex(texFile, outputPath);
   } catch (e) {

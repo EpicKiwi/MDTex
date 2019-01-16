@@ -22,7 +22,8 @@
     "unified": "^7.1.0",
     "unist-util-visit": "^1.4.0",
     "vfile": "^4.0.0",
-    "watchpack": "^1.6.0"
+    "watchpack": "^1.6.0",
+    "glob": "latest"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.0",

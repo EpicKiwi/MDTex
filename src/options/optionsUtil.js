@@ -2,6 +2,8 @@ const lodash = require("lodash");
 const yaml = require("js-yaml");
 const path = require("path");
 
+const RESOLVABLE_KEYS = ["document"];
+
 function mergeOptions(base, ...sources) {
   return lodash.mergeWith(base, ...sources, (base, src) => {
     //Merge arrays
@@ -12,6 +14,7 @@ function mergeOptions(base, ...sources) {
 }
 
 function normalizeOptions(options) {
+  if (options.$$normalized) return options;
   // Normalize packages //
   if (options.packages) {
     options.packages = options.packages.map(el => {
@@ -27,7 +30,7 @@ function normalizeOptions(options) {
       }
     });
   }
-
+  options.$$normalized = true;
   return options;
 }
 
@@ -36,13 +39,8 @@ function parseOptions(yml) {
   return typeof ymlResult !== "undefined" ? normalizeOptions(ymlResult) : {};
 }
 
-function resolveOptionsPath(
-  baseFolder,
-  options,
-  resolveUserRelativePaths = false
-) {
-  let resolvableKeys = options.resolvablePathKeys || [];
-  resolvableKeys.forEach(el => {
+function resolveOptionsPath(baseFolder, options) {
+  RESOLVABLE_KEYS.forEach(el => {
     if (options[el]) {
       options[el] = path.resolve(baseFolder, options[el]);
     }

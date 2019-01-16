@@ -3,5 +3,3 @@ document: "./document.tex"
 outputFolder: "./out"
 buildLatex: true
 index: "./index.md"
-resolvablePathKeys:
-  - document

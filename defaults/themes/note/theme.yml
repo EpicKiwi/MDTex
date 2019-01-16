@@ -1,0 +1,5 @@
+themeInfo:
+  name: "note"
+  description: "A simple theme to make small and quick articles"
+  version: 1.0.0
+document: "./document.tex"

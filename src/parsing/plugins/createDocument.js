@@ -3,6 +3,7 @@ const path = require("path");
 const mustache = require("mustache");
 const { promisify } = require("util");
 const vfile = require("vfile");
+const latexRenderer = require("../../output/latexRenderer");
 const pfs = {
   readFile: promisify(fs.readFile)
 };
@@ -20,12 +21,10 @@ function createDocument() {
     mustache.escape = value => value;
 
     try {
-      result = mustache.render(
-        templateFile.contents,
-        { content, options },
-        {},
-        ["<<", ">>"]
-      );
+      result = latexRenderer.render(templateFile.contents, {
+        content,
+        options
+      });
     } catch (e) {
       let pos = parseInt(e.message.replace(/^.*at (\d+).*$/, "$1"));
       let line = templateFile.contents.substring(0, pos).split("\n").length;

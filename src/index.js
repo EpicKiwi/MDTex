@@ -6,24 +6,41 @@ const Watchpack = require("watchpack");
 const logger = require("./loggers/logger");
 const envSetup = require("./options/envSetup");
 const { loadOptions } = require("./options/optionsTree");
+const themeUtil = require("./options/themeUtils");
+const optionPaths = require("./options/optionsPaths");
+const optionsUtil = require("./options/optionsUtil");
 
 class BuildCommand extends Command {
   async run() {
     const { args, flags } = this.parse(BuildCommand);
 
     await envSetup.checkSetup();
-    let envOptions = await loadOptions();
-    if (typeof flags.out !== "undefined") {
-      envOptions.outputFolder = flags.out;
-    }
-    if (typeof flags["no-build"] !== "undefined") {
-      envOptions.buildLatex = !flags["no-build"];
-    }
-    if (typeof args.input !== "undefined") {
-      envOptions.index = args.input;
-    }
 
-    console.log(envOptions);
+    let globalOptions = await loadOptions(
+      optionPaths.DEFAULT_PATH,
+      optionPaths.HOME_PATH
+    );
+
+    let projectOptions = await loadOptions(optionPaths.CWD_PATH);
+
+    let argsOptions = await loadOptions({
+      outputFolder: flags.out,
+      buildLatex: flags["no-build"] ? !flags["no-build"] : undefined,
+      index: args.index
+    });
+
+    let envOptions = optionsUtil.mergeOptions(
+      {},
+      globalOptions,
+      projectOptions,
+      argsOptions
+    );
+
+    envOptions.$$globalOptions = globalOptions;
+    envOptions.$$projectOptions = projectOptions;
+    envOptions.$$argsOptions = argsOptions;
+
+    await themeUtil.loadThemes();
 
     if (flags.watch) {
       await this.watch(envOptions);

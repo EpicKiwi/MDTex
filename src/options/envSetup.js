@@ -24,6 +24,7 @@ async function checkSetup() {
 async function setup() {
   try {
     await pfs.mkdir(optionsPaths.HOME_ROOT, { recursive: true });
+    await pfs.mkdir(optionsPaths.USER_THEMES, { recursive: true });
     await pfs.writeFile(optionsPaths.HOME_PATH, "");
   } catch (e) {
     logger.error(e.message);

@@ -3,7 +3,7 @@ const chalk = require("chalk");
 const logType = {
   ERROR: "ERRO",
   WARNING: "WARN",
-  INFO: "INFO",
+  INFO: "    ",
   OK: " OK ",
   DEBUG: "DEBG"
 };
@@ -12,6 +12,7 @@ const defaultColor = { background: chalk.inverse, text: chalk.reset };
 const statusColors = {
   [logType.ERROR]: { background: chalk.bgRed, text: chalk.red.bold },
   [logType.WARNING]: { background: chalk.bgYellow, text: chalk.yellow },
+  [logType.INFO]: { background: chalk.reset, text: chalk.reset },
   [logType.OK]: { background: chalk.bgGreen, text: chalk.green }
 };
 

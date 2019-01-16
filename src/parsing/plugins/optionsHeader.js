@@ -1,4 +1,9 @@
 const yaml = require("js-yaml");
+const optionsTree = require("../../options/optionsTree");
+const optionsPath = require("../../options/optionsPaths");
+const themeUtil = require("../../options/themeUtils");
+const logger = require("../../loggers/logger");
+const normalizeOptions = require("../../options/optionsUtil").normalizeOptions;
 const { mergeOptions, parseOptions } = require("../../options/optionsUtil");
 
 const OPTION_BLOC_REGEX = /^(\s*---+\s*\r?\n)([\s\S]+)\n---+\s*\r?\n/;
@@ -23,7 +28,7 @@ function optionHeaderPlugin() {
       yamlContent = match[2];
 
       try {
-        headerOptions = parseOptions(yamlContent);
+        headerOptions = normalizeOptions(parseOptions(yamlContent));
       } catch (e) {
         headerError = {
           error: e,
@@ -45,10 +50,38 @@ function optionHeaderPlugin() {
     if (headerError) {
       file.fail(headerError.error.reason, headerError.position);
     }
-    if (file.data.options) {
-      mergeOptions(file.data.options, headerOptions);
-    } else {
-      file.data.options = headerOptions;
+
+    let noThemeOptions = mergeOptions({}, file.data.options, headerOptions);
+
+    let themeName = noThemeOptions.type;
+    let themeOptions = {};
+
+    try {
+      themeOptions = themeName ? themeUtil.getTheme(themeName) : {};
+    } catch (e) {
+      file.fail(`Can't load document type of name ${themeName} : ${e.message}`);
+    }
+
+    let finalOptions = {};
+
+    const {
+      $$globalOptions,
+      $$projectOptions,
+      $$argsOptions
+    } = file.data.options;
+
+    mergeOptions(
+      finalOptions,
+      $$globalOptions,
+      themeOptions,
+      $$projectOptions,
+      $$argsOptions,
+      headerOptions
+    );
+
+    file.data.options = finalOptions;
+    if (process.env.DEBUG) {
+      logger.log("Options tree : \n", finalOptions);
     }
   };
 }

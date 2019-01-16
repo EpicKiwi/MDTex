@@ -12,6 +12,19 @@ function importParser() {
   const tokenizers = Parser.prototype.blockTokenizers;
   const methods = Parser.prototype.blockMethods;
 
+  let oldSettings = this.data("settings") || {};
+  oldSettings.overrides = oldSettings.overrides || {};
+  oldSettings.overrides.import = stringifyImport;
+  this.data("settings", oldSettings);
+
+  function stringifyImport(_o, node) {
+    if (node.file && node.file.contents) {
+      return `%% Imported ${node.path}\n\n${node.file.contents}`;
+    } else {
+      return `%% Ignored import ${node.path}`;
+    }
+  }
+
   function tokenizeImport(eat, value, silent) {
     let match = value.match(/^<\(([^)]+)\)>/);
 

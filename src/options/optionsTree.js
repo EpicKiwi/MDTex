@@ -6,31 +6,32 @@ const pfs = {
 const path = require("path");
 const optionsUtils = require("./optionsUtil");
 const logger = require("../loggers/logger");
-const optionsPaths = require("./optionsPaths");
 
-async function loadOptions() {
-  let options = await loadOptionsFrom(optionsPaths.DEFAULT_PATH);
-
+async function loadOptions(...paths) {
   try {
-    let currentFolderOptions = await loadOptionsFrom(optionsPaths.CWD_PATH);
-    optionsUtils.normalizeOptions(currentFolderOptions);
-    options = optionsUtils.mergeOptions(options, currentFolderOptions);
+    let optionsContent = await Promise.all(
+      paths.map(async el => {
+        let options = {};
+        if (typeof el !== "object") {
+          options = await loadOptionsFrom(el);
+        } else {
+          options = el;
+        }
+        return options;
+      })
+    );
+
+    let optionTree = optionsContent.reduce((acc, el) => {
+      let newOptions = { ...acc };
+      optionsUtils.mergeOptions(newOptions, el);
+      return newOptions;
+    }, {});
+
+    return optionTree;
   } catch (e) {
     logger.error(e.message);
     throw e;
   }
-
-  try {
-    let homeFolderOptions = await loadOptionsFrom(optionsPaths.HOME_PATH);
-    optionsUtils.normalizeOptions(homeFolderOptions);
-    options = optionsUtils.mergeOptions(options, homeFolderOptions);
-  } catch (e) {
-    logger.error(e.message);
-    throw e;
-  }
-
-  optionsUtils.resolveOptionsPath(process.cwd(), options, true);
-  return options;
 }
 
 async function loadOptionsFrom(filePath) {
@@ -50,4 +51,4 @@ async function loadOptionsFrom(filePath) {
   return rawOptions;
 }
 
-module.exports = { loadOptions };
+module.exports = { loadOptions, loadOptionsFrom };
