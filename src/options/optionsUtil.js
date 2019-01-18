@@ -45,6 +45,11 @@ function resolveOptionsPath(baseFolder, options) {
       options[el] = path.resolve(baseFolder, options[el]);
     }
   });
+  if (options.overrides) {
+    Object.keys(options.overrides).forEach(key => {
+      options.overrides[key] = path.resolve(baseFolder, options.overrides[key]);
+    });
+  }
   return options;
 }
 

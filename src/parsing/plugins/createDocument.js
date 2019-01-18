@@ -23,13 +23,12 @@ function createDocument() {
     try {
       result = latexRenderer.render(templateFile.contents, {
         content,
+        dirname: path.dirname(templateFile.path),
         options
       });
     } catch (e) {
-      let pos = parseInt(e.message.replace(/^.*at (\d+).*$/, "$1"));
-      let line = templateFile.contents.substring(0, pos).split("\n").length;
       templateFile.fail(`Error in document template rendering : ${e.message}`, {
-        line
+        line: e.line
       });
     }
 

@@ -6,7 +6,7 @@ const logger = require("../../loggers/logger");
 const normalizeOptions = require("../../options/optionsUtil").normalizeOptions;
 const { mergeOptions, parseOptions } = require("../../options/optionsUtil");
 
-const OPTION_BLOC_REGEX = /^(\s*---+\s*\r?\n)([\s\S]+)\n---+\s*\r?\n/;
+const OPTION_BLOC_REGEX = /^(\s*---+\s*\r?\n)([\s\S]+?)\n---+\s*\r?\n/;
 
 function optionHeaderPlugin() {
   let headerOptions = {};

@@ -3,3 +3,24 @@ themeInfo:
   description: "A simple theme to make small and quick articles"
   version: 1.0.0
 document: "./document.tex"
+overrides:
+  heading1: "./parts/heading1.tex"
+  heading2: "./parts/heading2.tex"
+  heading3: "./parts/heading3.tex"
+  heading4: "./parts/heading4.tex"
+  heading5: "./parts/heading5.tex"
+  heading6: "./parts/heading6.tex"
+  heading7: "./parts/heading7.tex"
+  image: "./parts/image.tex"
+  list: "./parts/list.tex"
+  listItem: "./parts/listitem.tex"
+  thematicBreak: "./parts/thematicbreak.tex"
+  code: "./parts/code.tex"
+  inlineCode: "./parts/inlineCode.tex"
+  blockquote: "./parts/blockquote.tex"
+packages:
+  - graphicx
+  - geometry: "left=2cm, right=2cm, top=2cm, bottom=2cm"
+  - adjustbox: "export"
+  - listings
+  - xcolor

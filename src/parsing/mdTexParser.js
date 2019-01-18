@@ -5,7 +5,7 @@ const mdparser = require("remark-parse");
 const optionParser = require("./plugins/optionsHeader");
 const createDocument = require("./plugins/createDocument");
 const unescapeLatex = require("./plugins/unescapeLatex");
-const customParts = require("./plugins/customParts");
+const customParts = require("./plugins/customPartsPlugin/customParts");
 
 function getParser() {
   return unified()
